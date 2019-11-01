@@ -14,6 +14,7 @@ def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
         fold_size = int(np.trunc(nb_item/nb_fold)) #define the number of item per folds
         df_fold = pd.DataFrame()
         
+        # Assign group per the item selected
         for j in range(nb_fold) :
             fold_number = j
             id_fold = df[dimension].sample(n=fold_size, random_state=42).to_frame() # define random item  (random_state to get all the time the same randomisation )
@@ -21,8 +22,7 @@ def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
             
             for i in id_fold[dimension]: 
                 df_item = df_item[df_item.ItemKey !=i] # remove the item from the list to avoid the same random sampling in the next iteration
-            #df_item = pd.merge(df_item, id_fold, how = 'left', on = 'ItemKey' ).fillna(-1)# merge fold_id with dataframe  
-            #df_item = df_item[df_item['fold_number']<0]
+      
             df_fold =     df_fold.append(id_fold) # append the created id to the existing id_fold 
         
             print(str(int((len(df_fold) / len(df_item) )* 10 ** (1 + 2)) / (10 ** (1))) + '%')# print percentage 
