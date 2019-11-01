@@ -1,4 +1,4 @@
-def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
+def fold (df,dimension,nb_fold = 100,random_state = 42 ):
     """
     Define randomly different group id per item ( as fold )
     Parameters : df = panda database , dimension = dimension used  to split accordingly , nb_fold = number of group to create , random_state = random spliting 
@@ -14,7 +14,6 @@ def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
         fold_size = int(np.trunc(nb_item/nb_fold)) #define the number of item per folds
         df_fold = pd.DataFrame()
         
-        # Assign group per the item selected
         for j in range(nb_fold) :
             fold_number = j
             id_fold = df[dimension].sample(n=fold_size, random_state=42).to_frame() # define random item  (random_state to get all the time the same randomisation )
@@ -22,10 +21,10 @@ def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
             
             for i in id_fold[dimension]: 
                 df_item = df_item[df_item.ItemKey !=i] # remove the item from the list to avoid the same random sampling in the next iteration
-      
+
             df_fold =     df_fold.append(id_fold) # append the created id to the existing id_fold 
         
-            print(str(int((len(df_fold) / len(df_item) )* 10 ** (1 + 2)) / (10 ** (1))) + '%')# print percentage 
+            print(str(int((len(df_fold) / nb_item )* 10 ** (1 + 2)) / (10 ** (1))) + '%')# print percentage 
         
         
         # do the last iteration outside the loop to include the reamining items 
@@ -36,6 +35,7 @@ def df_fold (df,dimension,nb_fold = 100,random_state = 42 ):
         df_fold =     df_fold.append(id_fold) # append the created id to the existing id_fold 
         
         # Merge the group id with the original dataframe 
-        df = pd.merge(df_DW3, df_fold, how = 'left', on = dimension )# merge fold_id with dataframe
-    
+        df = pd.merge(df, df_fold, how = 'left', on = dimension )# merge fold_id with dataframe
+    return df
     return print( 'Group index created')
+
