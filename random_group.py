@@ -1,7 +1,8 @@
 def fold (df,dimension,nb_fold = 100,random_state = 42 ):
     """
     Define randomly different group id per item ( as fold )
-    Parameters : df = panda database , dimension = dimension used  to split accordingly , nb_fold = number of group to create , random_state = random spliting 
+    Parameters : df = panda database , dimension = dimension used  to split accordingly ,
+    nb_fold = number of group to create , random_state = random spliting 
     """
     if nb_fold > df[dimension].nunique() :
        return print(' Number of group is higher than the nb of entity.\n It is impossible to assign a group per entity.\n\n >>> Review parameter nb_fold' )
@@ -21,7 +22,8 @@ def fold (df,dimension,nb_fold = 100,random_state = 42 ):
             
             for i in id_fold[dimension]: 
                 df_item = df_item[df_item.ItemKey !=i] # remove the item from the list to avoid the same random sampling in the next iteration
-
+            #df_item = pd.merge(df_item, id_fold, how = 'left', on = 'ItemKey' ).fillna(-1)# merge fold_id with dataframe  
+            #df_item = df_item[df_item['fold_number']<0]
             df_fold =     df_fold.append(id_fold) # append the created id to the existing id_fold 
         
             print(str(int((len(df_fold) / nb_item )* 10 ** (1 + 2)) / (10 ** (1))) + '%')# print percentage 
@@ -36,6 +38,6 @@ def fold (df,dimension,nb_fold = 100,random_state = 42 ):
         
         # Merge the group id with the original dataframe 
         df = pd.merge(df, df_fold, how = 'left', on = dimension )# merge fold_id with dataframe
+    print( 'Group index created')
     return df
-    return print( 'Group index created')
-
+   
